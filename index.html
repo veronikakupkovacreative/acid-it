@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ACID IT - Dual Panel + Motion</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='black'/%3E%3Ctext x='7' y='42' fill='white' font-size='22' font-family='Arial Black'%3EAI%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200..850&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- ICONS -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <symbol id="icon-canvas" viewBox="0 0 23 24"><path d="M3.83203 4H19.1654V20H3.83203V4ZM7.66536 8V16H15.332V8H7.66536Z"/></symbol>
+      <symbol id="icon-color" viewBox="0 0 24 24"><path d="M4 4H12V12H4V4ZM12 12H20V20H12V12Z"/></symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24"><path d="M10 4H14V12H10V4ZM6 12H10V16H6V12ZM14 12H18V16H14V12ZM10 16H14V20H10V16ZM4 20H20V22H4V20Z"/></symbol>
+      <symbol id="icon-export" viewBox="0 0 23 24"><path d="M3.83203 4H11.4987V8H7.66536V16H15.332V12H19.1654V20H3.83203V4ZM11.4987 8H19.1654V12H11.4987V8ZM15.332 4H19.1654V8H15.332V4ZM15.332 12H19.1654V16H15.332V12Z"/></symbol>
+      <symbol id="icon-image" viewBox="0 0 24 24"><path d="M2 4h20v16H2V4zm4 4v2h2V8H6zm12 8V8h-2v4h-2v-2h-2v2h-2v2H4v2h16v-2h-2z"></path></symbol>
+      <symbol id="icon-pattern" viewBox="0 0 24 24"><path d="M4 4H8V8H4V4ZM10 4H14V8H10V4ZM16 4H20V8H16V4ZM4 10H8V14H4V10ZM10 10H14V14H10V10ZM16 10H20V14H16V10ZM4 16H8V20H4V16ZM10 16H14V20H10V16ZM16 16H20V20H16V16Z"/></symbol>
+      <symbol id="icon-preset" viewBox="0 0 24 24"><path d="M4 4H8V20H4V4ZM10 4H14V20H10V4ZM16 4H20V20H16V4Z"/></symbol>
+      <symbol id="icon-reset" viewBox="0 0 23 24"><path d="M3.83203 4H15.332V8H7.66536V16H15.332V12H19.1654V20H3.83203V4ZM15.332 4H19.1654V8H15.332V4ZM7.66536 16H3.83203V20H7.66536V16Z"/></symbol>
+      <symbol id="icon-settings" viewBox="0 0 24 24"><path opacity="0.8" d="M4 10H8V14H4V10ZM10 10H14V14H10V10ZM16 10H20V14H16V10ZM8 4H16V8H8V4ZM8 16H16V20H8V16Z"/></symbol>
+      <symbol id="icon-upload" viewBox="0 0 23 24"><path d="M9.58203 10H13.4154V18H9.58203V10ZM5.7487 6H9.58203V10H5.7487V6ZM13.4154 6H17.2487V10H13.4154V6ZM9.58203 2H13.4154V6H9.58203V2ZM3.83203 20H19.1654V22H3.83203V20Z"/></symbol>
+      <symbol id="icon-motion" viewBox="0 0 24 24"><path d="M4 12h4v8H4zM10 4h4v16h-4zM16 10h4v10h-4z"/></symbol>
+    </svg>
+
+    <!-- TOP LEFT BRANDING -->
+    <div class="tool-logo">
+      <div class="tool-logo-headline">ACID IT</div>
+      <div class="tool-logo-subheadline">EXPERIMENTAL TOOL BY KUPKOVAAA!</div>
+    </div>
+
+    <!-- MAIN CENTER STAGE -->
+    <div class="stage-wrapper">
+      <div class="stage-frame" id="stageFrame">
+        <canvas id="previewCanvas" width="1400" height="1400"></canvas>
+        <div class="drop-hint" id="dropHint">
+          <span>DROP IMAGE ANYWHERE</span>
+          <b>GRADIENT MAP / LUMINANCE</b>
+        </div>
+        <div class="scanline"></div>
+      </div>
+    </div>
+
+    <!-- BOTTOM CENTER TOOLBAR -->
+    <div class="toolbar-center">
+      <span id="zoomLabel" class="toolbar-stat">FIT</span>
+      <button type="button" class="toolbar-btn" id="zoomOut" title="Zoom out">-</button>
+      <button type="button" class="toolbar-btn" id="zoomIn" title="Zoom in">+</button>
+      <button type="button" class="toolbar-btn" id="actualButton" title="Actual size">1:1</button>
+      <button type="button" class="toolbar-btn" id="fitButton" title="Fit image">FIT</button>
+      <button type="button" class="toolbar-btn" id="beforeButton" title="Hold to view original">BEFORE</button>
+      <label class="toggle-inline">
+        <input id="originalToggle" type="checkbox" />
+        <span>ORIGINAL</span>
+      </label>
+    </div>
+
+    <!-- TOGGLE BUTTON -->
+    <button id="toggleBtn" type="button" title="Toggle panels">
+      <svg class="ui-icon"><use href="#icon-settings"></use></svg>
+    </button>
+
+    <!-- LEFT PANEL: INPUT & PRESETS (Both Default Open) -->
+    <div class="panel panel-left" id="panelLeft">
+      <div class="panel-scroll">
+        
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-upload"></use></svg> Input</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="resetInput" title="Clear Image">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <label class="drop-zone" id="dropZone">
+              <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" />
+              <svg class="ui-icon" style="width:32px; height:32px; margin-bottom:10px;"><use href="#icon-upload"></use></svg>
+              <strong>DRAG & DROP</strong>
+              <span>YOUR IMAGE HERE</span>
+              <em>or</em>
+              <b>UPLOAD IMAGE</b>
+            </label>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-preset"></use></svg> Presets</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="resetPresets" title="Reset Preset">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <div class="preset-list" id="presetList"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-color"></use></svg> Imported Gradients</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="clearImportedGradients" title="Clear Imported Gradients">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <div class="gradient-import">
+              <label class="grd-upload">
+                <input id="grdInput" type="file" accept=".grd,application/octet-stream" />
+                <svg class="ui-icon"><use href="#icon-upload"></use></svg>
+                <span>Upload .GRD</span>
+              </label>
+              <button class="btn mini-btn" type="button" id="clearImportedGradientsAction">Clear Imported Gradients</button>
+              <button class="btn mini-btn" type="button" id="saveAcidPreset">Save as ACID Preset</button>
+              <p class="gradient-status" id="gradientImportStatus">No Photoshop gradients imported.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: ADJUSTMENTS, MOTION, OPTIONS, OUTPUT -->
+    <div class="panel panel-right" id="panelRight">
+      <div class="panel-scroll">
+        
+        <!-- ADJUSTMENTS (Default Collapsed) -->
+        <div class="section collapsed">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-settings"></use></svg> Adjustments</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="resetAdjustments" title="Reset Sliders">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <div class="sliders" id="sliders"></div>
+          </div>
+        </div>
+
+        <!-- MOTION (Collapsed) -->
+        <div class="section collapsed">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-motion"></use></svg> Motion</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="resetMotion" title="Reset Motion">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <label class="check-row"><input type="checkbox" id="animEnableControl" /><span>ANIMATED ACID FLOW</span></label>
+            <label class="check-row"><input type="checkbox" id="pingPongControl" /><span>PING-PONG LOOP</span></label>
+            <div class="sliders" id="motionSliders" style="margin-top: 16px;"></div>
+          </div>
+        </div>
+
+        <!-- OPTIONS (Collapsed) -->
+        <div class="section collapsed">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-pattern"></use></svg> Options</span>
+            <span class="section-tools">
+              <button class="section-reset" type="button" id="resetOptions" title="Reset Options">
+                <svg class="ui-icon"><use href="#icon-reset"></use></svg>
+              </button>
+              <span class="section-arrow">▾</span>
+            </span>
+          </div>
+          <div class="section-body">
+            <label class="check-row"><input type="checkbox" id="ditherControl" checked /><span>DITHER / HALFTONE</span></label>
+            <label class="check-row"><input type="checkbox" id="detailControl" checked /><span>PRESERVE DETAILS</span></label>
+            <label class="check-row"><input type="checkbox" id="bleedControl" checked /><span>FLUID BLEED</span></label>
+            <label class="check-row"><input type="checkbox" id="invertControl" /><span>INVERT GRADIENT MAP</span></label>
+            <label class="check-row"><input type="checkbox" id="refTextureControl" /><span>USE REFERENCE TEXTURE</span></label>
+            <label class="check-row"><input type="checkbox" id="facePreserveControl" /><span>FACE PRESERVE MODE</span></label>
+            <label class="check-row"><input type="checkbox" id="monoBaseControl" /><span>MONOCHROME BASE</span></label>
+            <label class="check-row"><input type="checkbox" id="transparentControl" /><span>TRANSPARENT BACKGROUND</span></label>
+          </div>
+        </div>
+
+        <!-- OUTPUT (Collapsed) -->
+        <div class="section collapsed">
+          <div class="section-header">
+            <span class="section-title"><svg class="ui-icon"><use href="#icon-export"></use></svg> Output</span>
+            <span class="section-arrow">▾</span>
+          </div>
+          <div class="section-body">
+            <div class="export-options">
+              <div class="export-option">
+                <label>FORMAT</label>
+                <select id="exportFormat" class="export-select">
+                  <option value="png">PNG (Static)</option>
+                  <option value="webm">WebM (Video Loop)</option>
+                  <option value="mp4">MP4 (Video Loop)</option>
+                  <option value="gif">GIF (Video Loop)</option>
+                </select>
+              </div>
+              <div class="export-option">
+                <label>RESOLUTION</label>
+                <select id="exportResolution" class="export-select">
+                  <option value="1" selected>1400px (1x)</option>
+                  <option value="2">2800px (High-Res 2x)</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn download-btn" type="button" id="downloadButton">
+              <svg class="ui-icon"><use href="#icon-download"></use></svg>
+              EXPORT
+            </button>
+            <p class="ready-line"><span class="status-dot" id="exportStatusDot"></span> <span id="exportStatusText">READY TO EXPORT</span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
